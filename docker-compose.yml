@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  budibase:
+    image: budibase/budibase:latest
+    container_name: budibase
+    restart: unless-stopped
+    ports:
+      - "10000:10000"
+    environment:
+      NODE_ENV: production
+      PORT: 10000
+      REDIS_URL: redis://budibase-redis:6379
+      COUCHDB_URL: http://admin:password@budibase-couchdb:5984
+    depends_on:
+      - budibase-redis
+      - budibase-couchdb
+
+  budibase-redis:
+    image: redis:7-alpine
+    container_name: budibase-redis
+    restart: unless-stopped
+
+  budibase-couchdb:
+    image: couchdb:3.3
+    container_name: budibase-couchdb
+    restart: unless-stopped
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: password
